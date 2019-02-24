@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>NICE re/streamer pro</title>
+<link href="/../css/style.css" rel="stylesheet">
+</head>
+<body>
+<script src="/../js/all.js"></script>
+<script src="/../js/jquery.min.js"></script>
+<script src="/../js/sockjs.min.js"></script>
+<script>
+var sock = new SockJS('/echo');
+sock.onopen = function() {};
+sock.onclose = function() {};
+sock.onmessage = function(e) {
+$("#info").text(e.data);
+
+};
+</script>
+<div class="page-header"><h2><%=page_title%>&nbsp;[ edit channel ]</h2></div>
+<div class="page-container">
+<nav><ul>
+    <%- include layouts/menu.ejs %>
+	<li><a href="/logout">Logout</a></li>
+</ul></nav>
+<div class="page-data">
+<form method="post" action="/restream/edit/<%=data[0].id%>">
+<table id="normal" width="90%" border="0" border-radius:2px cellpadding="4" cellspacing="10">	
+<tr>
+    <th class="mbox">Channel ID</th>
+	<td class="brd"><input type="text" name="ch_id" style="width:50px;" value="<%=data[0].ch_id%>" required><a style="font-size:14px;font-weight: bold;height:28px;padding:5px;color:red;"> On change , Please restart !</a></td>
+    <input name="ch_idn" type="hidden" value="<%=data[0].ch_id%>">
+</tr>
+<tr>
+    <th class="mbox">Channel Name</th>
+	<td class="brd"><input type="text" name="ch_na" value="<%=data[0].ch_na%>" required></td>
+</tr>
+<tr>
+    <th class="mbox">Channel source</th>
+	<td class="brd"><input id="intxt" type="text" name="ch_st" value="<%=data[0].ch_st%>" required></td>
+</tr>
+<tr>
+	<th class="mbox">Stream information</th>
+    <td class="brd"><input type="button" name="c" value="Get info" class="cancel"  style="position:absolute;width:110px;" onClick="var code = $('#intxt').val();$('#info').text('Analyzyng...please wait');sock.send('f'+code);"><textarea id="info" style="width:85%;margin: 4px 130px 0" name="textarea"></textarea></td>
+</tr>
+<tr>
+    <th class="mbox">Channel back source</th>
+	<td class="brd"><input type="text" name="ch_stbc" value="<%=data[0].ch_stbc%>" required></td>
+</tr>
+<tr>
+    <th class="mbox">FFmpeg command</th>
+	<td class="brd"><input type="text" id="ch_ff" name="ch_ff" value="<%=data[0].ch_ff%>" required><br>
+	<div class="select"style="margin :10px 0 0;"> Presets:
+	<select id="presets" name="presets" onchange="pre_set()">
+	<option value="">off</option>
+	<%if(preset){ 
+    for (var n in preset) { %>
+	<option value="<%=preset[n]%>" ><%=n%></option>
+	<%}}%>
+    </select>
+	</td>
+    </div>
+</tr>
+<tr>
+    <th class="mbox">Channel type</th>
+    <td>
+    <select name="ch_stat">
+	<%if(data[0].ch_stat == 0){%>
+    <option value="0" selected >[ffmpeg]dynamic</option>
+	<option value="1" >[ffmpeg]static</option>
+	<option value="2" >redirect</option>
+	<option value="3" >[dynamic]fast copy</option>
+	<option value="4" >[static]fast copy</option>
+	<%}%>
+	<%if(data[0].ch_stat == 1){%>
+	<option value="0" >[ffmpeg]dynamic</option>
+	<option value="1" selected >[ffmpeg]static</option>
+	<option value="2" >redirect</option>
+	<option value="3" >[dynamic]fast copy</option>	
+	<option value="4" >[static]fast copy</option>
+	<%}%>
+	<%if(data[0].ch_stat == 2){%>
+	<option value="0" >[ffmpeg]dynamic</option>
+	<option value="1" >[ffmpeg]static</option>
+	<option value="2" selected >redirect</option>
+	<option value="3" >[dynamic]fast copy</option>	
+	<option value="4" >[static]fast copy</option>
+	<%}%>
+	<%if(data[0].ch_stat == 3){%>
+	<option value="0" >[ffmpeg]dynamic</option>
+	<option value="1" >[ffmpeg]static</option>
+	<option value="2" >redirect</option>
+	<option value="3" selected >[dynamic]fast copy</option>
+	<option value="4" >[static]fast copy</option>
+	<%}%>
+	<%if(data[0].ch_stat == 4){%>
+	<option value="0" >[ffmpeg]dynamic</option>
+	<option value="1" >[ffmpeg]static</option>
+	<option value="2" >redirect</option>
+	<option value="3" >[dynamic]fast copy</option>
+	<option value="4" selected >[static]fast copy</option>
+	<%}%>
+    </select>
+	</td>
+</tr>
+<tr>
+	<th class="mbox">Categories</th>
+	<td>
+	<select id="ch_cat" name="ch_cat">
+	<%if(catn.length){ 
+    for (var n in catn) { %>
+	<%if(catn[data[0].ch_cat] == catn[n]){%><option value="<%=n%>" selected ><%=catn[data[0].ch_cat]%></option>
+	<%}else{%><option value="<%=n%>" ><%=catn[n]%></option>
+	<%}}}%>
+    </select>
+    </td>
+</tr>
+<tr>
+	<th class="mbox">Channel HLS</th>
+	<td >
+    <select name="ch_hls">
+	<%if(!data[0].ch_hls){%>
+    <option value="0" selected >don't</option>
+	<option value="1" >make</option>
+	<%}else{%>
+	<option value="0" >don't</option>
+	<option value="1" selected >make</option>
+	<%}%>
+    </select>
+	</td>			 
+</tr>
+<tr>
+	<th class="mbox">Notes</th>
+	<td class="brd"><input type="text" name="ch_note" value="<%=data[0].ch_note%>"></td>
+</tr>
+<tr>
+    <th class="mbox">On Host</th>
+	<td class="brd"><input type="text" name="ch_ip" value="<%=data[0].ch_ip%>" required></td>
+</tr>
+<tr id="ch_epgg">
+	<th class="mbox">Epg</th>
+	<td> Channel Name :
+	<select name="ch_epg">
+	<option value="nodata" >-</option>
+	<%for (var v in epgn) { 
+    for (var n in epgn[v]) { %>
+	<%if(data[0].ch_epg == epgn[v][n]){%><option value="<%=epgn[v][n]%>" selected ><%=data[0].ch_epg%></option>
+	<%}else{%><option value="<%=epgn[v][n]%>" ><%=epgn[v][n]%></option>
+	<%}}}%>
+    </select> EPG source :
+	<select name="ch_ce" onClick="cepg();">
+	<option value="nodata" >-</option>
+	<%if(catn.length){ 
+    for (var n in catn) { %>
+	<option value="<%=n%>" ><%=catn[n]%></option>
+	<%}}%>
+    </select>
+    </td>
+</tr>
+<tr>
+	<th class="mbox">Icon</th>
+	<td class="brd"><input type="text" name="ch_ico" value="<%=data[0].ch_ico%>"></td>
+</tr>
+<tr>
+	<th class="mbox">Type</th>
+	<td >
+    <select name="ch_typ">
+	<%if(data[0].ch_typ == "live"){%>
+    <option value="live" selected >live</option>
+	<option value="movie" >movie</option>
+	<%}else{%>
+	<option value="live" >live</option>
+	<option value="movie" selected >movie</option>
+	<%}%>
+    </select>
+	</td>	
+	
+</tr> 
+<tr>
+	<th class="mbox">User agent</th>
+	<td>
+	<select id="ch_uaid" name="ch_uaid">
+	<%if(uaid.length){ 
+    for (var n in uaid) { %>
+	<%if(uaid[data[0].ch_uaid] == uaid[n]){%><option value="<%=n%>" selected ><%=uaid[data[0].ch_uaid]%></option>
+	<%}else{%><option value="<%=n%>" ><%=uaid[n]%></option>
+	<%}}}%>
+    </select>
+    </td>
+</tr>
+<tr>
+    <td class="label"></td>
+    <td>
+    &nbsp; <input type="submit" name="submit" value="Save" onClick="return mSubmit(<%=data[0].ch_na%>);" >
+    <input type="button" name="cancel" value="Cancel" class="cancel" onClick="cancelAdd()">
+    </td>
+ </tr>
+</table>
+</form>        
+</div>
+</div> 
+
+	<%if(epgn){ 
+    for (var n in epgn) { %>
+	<input name="<%=n%>" type="hidden" value="<%=epgn[n]%>">
+	<%}}%>
+	
+<script>
+var lineff=document.getElementById("ch_ff").value;
+function pre_set(){
+    var pre = document.getElementById("presets").value;
+	if (pre == ""){
+	   document.getElementById("ch_ff").value = lineff; 
+	}else{
+       document.getElementById("ch_ff").value = pre; 
+	}
+}
+function cepg(){
+    var box = document.getElementsByName('ch_ce'), vals = [];
+	var sc = box[0].value;
+	var box1 = document.getElementsByName('epg_'+sc), vals = [];
+	var sp = box1[0].value;
+    var spa = sp.split(',');
+	var tmp = '<select name="ch_epg" ><option value="nodata" >-</option>';
+    for (var n in spa) {
+	 tmp =tmp+"<option value=\""+spa[n]+"\" >"+spa[n]+"</option>";
+	}
+    tmp = tmp+'</select>';
+	document.getElementById("ch_epgg").children[1].children[0].innerHTML = tmp; 	 
+}
+</script>
+</body>
+</html>

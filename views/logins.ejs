@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>NICE Authentication</title>
+	<link href="/../css/login.css" rel="stylesheet">
+</head>
+<body>
+<div class="login-page">
+<div class="form">
+    <% if (message.length > 0) { %>
+    <div class="login-field"><%= Errorrrr %></div>
+    <% } %>
+<form  action="/login" method="post">
+<div><h1>NICE re/streamer pro</h1></div>
+<div><br></div>
+<div>
+	<input type="text" name="username" value="enter username" style="color:#5fd367;" onfocus='if(this.value=="enter username"){this.value="";}' " required" >
+</div>
+<div><br></div>
+<div>
+    <input type="password" name="password" value="enter password" style="color:#5fd367;" onfocus='if(this.value=="enter password"){this.value="";}'" required" >
+</div>
+<div><br></div>
+    <button type="submit" class="btn btn-primary btn-large btn-block">Login</button>
+</form>
+<div><br></div>
+</div>
+</div>
+</body>
+<p style="text-align:center;"><a href="http://nice-panel.com" target="_blank">[ nice-iptv pannel © | 2018 | all rights reserved ]</a></p>
+</html>

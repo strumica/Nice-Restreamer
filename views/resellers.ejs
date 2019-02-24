@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>NICE re/streamer pro</title>
+<link href="/../css/style.css" rel="stylesheet">
+</head>
+
+</style>
+<body>
+<script src="/../js/all.js"></script>
+<script src="/../js/jquery.min.js"></script>
+<div class="page-header"><h2><%=page_title%>&nbsp;[ resellers ]</h2></div>
+<div class="page-container">
+<nav><ul>
+	<%- include layouts/menu.ejs %>
+	<li><a href="/logout">Logout</a></li>
+	<li style="position: absolute; right: 1px;"><input id="search" type="text" placeholder="Search" autocomplete="off" /></li>
+</ul></nav>
+<div class="page-data">
+<div class="data-table">
+<form class="statustd" method="post" action="/resellers/add">
+
+<table id="normal" width="100%" border="0" cellpadding="2" cellspacing="0" >
+
+<tr style='text-align:center;vertical-align:middle;'>
+
+<td><input type="text" name="username" value="enter username" class="memin" onfocus='if(this.value=="enter username"){this.value="";}' onblur="this.value = this.value==''?'enter username':this.value;" required></td>
+<td><input type="text" name="password" id="passs" value="" class="memin" required></td>
+<td><input type="text" name="note" value="notes here" class="memin"  onfocus='if(this.value=="notes here"){this.value="";}' onblur="this.value = this.value==''?'notes here':this.value;" ></td>
+<td><input type="text" name="cred" value="credits" class="memin"  ></td>
+
+<td class="statustd" style="padding:5px;"><input class="a-inside edit" style="width:100%;" type="submit" name="submit" value="Add"></td>
+</tr>
+</form> 
+<!-- <th style="width: 5%">Allow Categories</th>  -->
+<table class="roundedCorners">
+<tr>
+	<%if(catn.length){ 
+    for (var n in catn) { %>
+	<td class="checkbox"><input type="checkbox" name="check_<%=n%>" value=<%=n%> checked >  <%=catn[n]%> [ ID: <%=n%> ]</td>
+	
+	<%}}%>
+</tr>
+</table>
+
+<td><br></td>
+<table id="src" width="100%" border="0" cellpadding="0" cellspacing="0" >
+<tr style='text-align:center;vertical-align:middle;background:#455b6d;'>
+	<th style="width: 1%">#</th>
+	<th style="width: 15%">Username</th>
+	<th style="width: 15%">Password</th>
+	<th style="width: 20%">Notes</th>
+	<th style="width: 30%">Categories</th>
+	<th style="width: 20%">Credits</th>
+	<th style="width: 10%">Action</th>
+</tr>
+<% var col = "",colb = ""; %>
+<% if(data.length){ 
+for(var i = 0;i < data.length;i++) { %>
+<%if (data[i].rs_name){%>
+<%if (col == "#ECF0F1"){col = "#CFD9DB";} else {col = "#ECF0F1";}%>
+<tr style="background: <%=col%>;">
+    <td class="statustde"><%=(i+1)%></td>
+    <td class="status"><a class="st"><%=data[i].rs_name%></a></td>
+	<td class="status"><%=data[i].rs_pass%></td>
+	<td class="status"><%=data[i].rs_note%></td>
+	<td class="status"><%=data[i].rs_idpls%></td>
+	<td class="status"><%=data[i].rs_cred%></td>
+	<td class="statustd">
+        <a class="a-inside edit" href="../resellers/edit/<%=data[i].id%>">Edit</a>                
+        <a class="a-inside delete" onClick="return confirmSubmit(<%=data[i].rs_name%>);" href="../resellers/delete/<%=data[i].id%>">Delete</a>
+    </td>
+</tr>
+<% } }
+}else{ %>
+<tr>
+    <td colspan="3">No data</td>
+</tr>
+<% } %>
+<tr style="background:#455b6d;">
+    <td><br></td><td></td><td></td><td></td><td></td><td></td><td></td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</body> 
+<script>
+    function $(id){
+        var el = 'string' == typeof id
+          ? document.getElementById(id)
+          : id;
+
+        el.on = function(event, fn){
+          if ('content loaded' == event) {
+            event = window.attachEvent ? "load" : "DOMContentLoaded";
+          }
+          el.addEventListener
+            ? el.addEventListener(event, fn, false)
+            : el.attachEvent("on" + event, fn);
+        };
+
+        el.all = function(selector){
+          return $(el.querySelectorAll(selector));
+        };
+
+        el.each = function(fn){
+          for (var i = 0, len = el.length; i < len; ++i) {
+            fn($(el[i]), i);
+          }
+        };
+
+        el.getClasses = function(){
+          return this.getAttribute('class').split(/\s+/);
+        };
+
+        el.addClass = function(name){
+          var classes = this.getAttribute('class');
+          el.setAttribute('class', classes
+            ? classes + ' ' + name
+            : name);
+        };
+
+        el.removeClass = function(name){
+          var classes = this.getClasses().filter(function(curr){
+            return curr != name;
+          });
+          this.setAttribute('class', classes.join(' '));
+        };
+
+        return el;
+    }
+
+    function search() {
+        var str = $('search').value.toLowerCase();
+        var links = $('src').all('a.st');
+        links.each(function(link){
+          var text = link.textContent.toLowerCase();
+          if ('..' == text) return;
+          if (str.length && ~text.indexOf(str)) {
+            link.addClass('highlight');
+          } else {
+            link.removeClass('highlight');
+          }
+        });
+    }
+
+    $(window).on('content loaded', function(){
+        $('search').on('keyup', search);
+    });
+	  
+function randomPassword()
+{
+  chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+  pass = "";
+  for(x=0;x<6;x++)
+  {
+    i = Math.floor(Math.random() * 62);
+    pass += chars.charAt(i);
+  }
+   document.getElementById("passs").setAttribute('value',pass);
+}
+randomPassword();
+</script>
+</html>

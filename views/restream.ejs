@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>NICE re/streamer pro</title>
+<link href="/../css/style.css" rel="stylesheet">
+</head>
+<%if(niv.length>4){var colh = "#9a1010";}else{var colh = "#2C3A48";}%>
+<body style="background-color: <%=colh%>;">
+<script src="/../js/all.js"></script>
+<script src="/../js/jquery.min.js"></script>
+<script src="/../js/sockjs.min.js"></script>
+<script>
+var sock = new SockJS('/echo');
+sock.onopen = function() {};
+sock.onclose = function() {};
+
+var timen = 3;
+var tim_x;
+var tim_n;
+
+function refr(n){
+	$("#refr_1").text("off");
+	$("#refr_2").text("3 sec");
+	$("#refr_3").text("30 sec");
+    $("#refr_4").text("60 sec");
+    $("#refr_5").text("3 min");
+    clearTimeout(tim_n);
+    clearTimeout(tim_x);
+switch(n) {
+    case 0:
+		$("#refr_1").text("* off");
+        break;
+    case 3:
+        timen = 3;
+		$("#refr_2").text("* 3 sec");
+		refx();
+        break;
+	case 30:
+        timen = 30;
+		$("#refr_3").text("* 30 sec");
+		refx();
+        break;	
+    case 60:
+        timen = 60;
+		$("#refr_4").text("* 60 sec");
+		refx();
+        break;
+	case 180:
+        timen = 180;
+		$("#refr_5").text("* 3 min");
+		refx();
+        break;	
+    default:
+}
+
+}
+
+function refx(){
+tim_x = setTimeout(function() {sock.send('v');refn();}, timen*1000);
+}
+
+
+function refn(){
+tim_n = setTimeout(function() {sock.send('v');refx();}, timen*1000);
+}
+
+refx();
+
+sock.onmessage = function(e) {
+var updata1 = JSON.parse(e.data);
+var updataclh = updata1[0];
+var updata = updata1[1];
+var updatacl = updata1[2];
+var updataso = updata1[7];
+var updatahls = updata1[9];
+
+$("#cpu").text("CPU : "+updata1[6]+" %");
+$("#tmem").text("Total mem : "+~~(updata1[3]/1000)+" Gb");
+$("#tmemf").text("Free mem : "+updata1[4]+" %");
+$("#upt").text("TX/RX : "+updata1[5]);
+var tmph = new Date((new Date()) - updata1[8]).toISOString().match(/(\d{2})T(\d{2}:\d{2}:\d{2})/);
+tmph[1]--;
+$("#uptime").text("Uptime : "+tmph[1]+"d "+tmph[2]);
+
+if(updata.length){ 
+    for(var i = 0;i < updata.length;i++) {
+	var tmp = "";
+	 if(updata[i][1]){
+	  $("#stat_"+i).css("background-color", "#13cd13");
+	 }else{
+      $("#stat_"+i).css("background-color", "#E54747");
+	 }
+	
+		 
+	 if(updataso[i]==0){
+	  tmp = "source 1";
+	 }else{
+	  tmp = "source 2";
+	 }
+	 
+    $("#stat3_"+i+" #sta3").text(tmp);
+	
+	if(updatahls[i]==0){
+	  tmp = "don't";
+	 }else{
+	  tmp = "make";
+	}
+	
+	$("#stat4_"+i+" #sta4").text(tmp);
+	
+	$("#stcl_"+i+" #stcl").text(updatacl[i]);
+	$("#stclh_"+i+" #stclh").text(updataclh[i]);
+    }
+  }
+};
+
+$(".statustde").click(function(){
+    window.location = $(this).attr('href');
+});
+
+function getcat(n){
+	window.location.href = ""+n;
+}
+
+function myS(){
+    var xdd = document.getElementsByClassName("page-text");
+	if(xdd[0].style.height != "72px"){
+    var rawFile = new XMLHttpRequest();
+    rawFile.onreadystatechange = function ()
+    {
+        if(rawFile.readyState === 4)
+        {
+            if(rawFile.status === 200 || rawFile.status == 0)
+            {
+                 //alert(rawFile.responseText);
+				//var xdd = document.getElementsByClassName("page-text");
+				//if(xdd[0].style.height == "56px"){
+				//    xdd[0].style.height = "0px";
+				//    xdd[0].innerHTML = '';
+				//}else{
+				    xdd[0].style.height = "72px";
+				    xdd[0].innerHTML = rawFile.responseText;
+				//}
+            }
+        }
+    } 
+    rawFile.open("GET", "http://nice-panel.com/news.info", true);
+	rawFile.send(null);
+	}else{
+		xdd[0].style.height = "0px";
+		xdd[0].innerHTML = '';
+	}
+}
+
+function togglelic() {
+var agree=confirm("After Import Restreamer will be Restarted! ");
+if (agree){
+    var frm = document.getElementsByName('formsendlic');
+    frm[0].action='/licimp';
+    document.getElementById('lfile').click();
+}
+}
+
+</script>
+<div class="statusdv">
+	<a id="uptime" class="statusv"></a>
+	<a id="upt" class="statusv"></a>
+	<a id="tmem" class="statusv"></a>
+	<a id="tmemf" class="statusv"></a>
+	<a id="cpu" class="statusv"></a>
+</div>
+<div class="page-header"><h2><%=page_title%></h2><h2>&nbsp;<%=niv%></h2><img src="/../images/in.png" alt="Smiley face" height="22" width="22"onclick="myS()"></div><div class="page-text"></div>	
+<div class="page-container">
+<nav><ul>
+<%- include layouts/menu.ejs %>
+<li>
+<a style="cursor: pointer;background:#BCBCBC;"  href="#" >>Categories<</a>
+<ul>
+    <li><a onClick="getcat(-1);" >All cat</a></li>
+	<%if(catn.length){ 
+    for (var n in catn) { if(n!=0){%>
+	<li><a onClick="getcat(<%=n%>);" ><%=catn[n]%></a></li>
+	<%}}}%>
+</ul>
+</li>
+<li><a href="#">Refresh</a>
+<ul>
+	<li><a id="refr_1" onClick="refr(0);" href="#">off</a></li>
+	<li><a id="refr_2" onClick="refr(3);" href="#">* 3 sec</a></li>
+	<li><a id="refr_3" onClick="refr(30);" href="#">30 sec</a></li>
+	<li><a id="refr_4" onClick="refr(60);" href="#">60 sec</a></li>
+	<li><a id="refr_5" onClick="refr(180);" href="#">3 min</a></li>
+</ul>
+</li>
+<li><a href="/logout">Logout</a></li>
+<p style="position: absolute; right: 20px; top: -8px;font-size:13px;"><a><b style="color:#0174F4">Expires:</b><%=dexp%><b style="color:#0177B3"> mpegts:</b><%=portw%><b style="color:#F79000"> hls:</b><%=porth%><b style="color:#A78000"> xtream:</b><%=portxt%><b style="color:#F74703"> stalker:</b><%=portxt+1%><b style="color:#F62200"> nApi:</b><%=portxt+2%></a></p>
+</ul></nav>
+<div class="data-table">
+<table id="normal" width="100%" border="0" cellpadding="0" cellspacing="0" >
+<tbody>
+	<tr style='text-align:center;vertical-align:middle;background:#455b6d'>
+	 <th style="width: 2%">#</th>
+	 <th style="width: 2%">ID</th>
+	 <th style="width: 55%">Channel Name</th>
+	 <th style="width: 8%">Categories</th>
+	 <th style="width: 4%">Video</th>
+	 <th style="width: 4%">Audio</th>
+	 <th style="width: 4%">Type</th>
+	 <th style="width: 4%">HLS</th>
+	 <th style="width: 4%">#M3U8</th>
+	 <th style="width: 4%">Clients</th>
+	 <th style="width: 15%">Actions</th>
+	</tr>
+	<% var col = "",colb = "",colb1 = ""; %>
+    <% if(data.length){ 
+    for(var i = 0;i < data.length;i++) { %>
+	<%if (data[i].ch_id != 0){%>
+	<%if (col == "#ECF0F1"){col = "#c8d7db";} else {col = "#ECF0F1";}%>
+  <tr style="background: <%=col%>;">
+    <td class="statustde"><%=(i+1)%></td>
+    <td id="stat_<%=i%>" class="statusv"><%=data[i].ch_id%></td>
+	
+	<td id="stat3_<%=i%>" class="statustde"><a href="../edit/<%=data[i].id%>"><%=data[i].ch_na%> </a><a id="sta3" class="status" style="color:#897779;font-size:12px" >read</a></td>
+	<td id="stat4_<%=i%>" class="status"><%=data[i].ch_cat%></td>
+	<% var vid, aud ;
+	if(data[i].ch_ff == '00'){vid="copy";colb=col;aud="copy";colb1=col;}
+	if(data[i].ch_ff == '10'){vid="h264";colb="#afc1c3";aud="copy";colb1=col;}
+	if(data[i].ch_ff == '01'){vid="copy";colb=col;aud="aac";colb1="#afc1c3";}
+	if(data[i].ch_ff == '11'){vid="h264";colb="#afc1c3";aud="aac";colb1="#afc1c3";}
+	%>
+	<td class="status" style="background: <%=colb%>;"><%=vid%></td>
+	<td class="status" style="background: <%=colb1%>;"><%=aud%></td>
+	<%var flagst;if(data[i].ch_stat == 0){flagst="dynamic";colb1="#008192";};if(data[i].ch_stat == 1){flagst="static";colb1="#854c4c";};if(data[i].ch_stat == 2){flagst="redirect";colb1="#0ac169";};if(data[i].ch_stat == 3){flagst="fc dynamic";colb1="#b5124d";};if(data[i].ch_stat == 4){flagst="fc static";colb1="#b51FFF";}%>
+	<td class="status"style="color: <%=colb1%>;"><%=flagst%></td>
+	<td id="stat4_<%=i%>" class="status"><a id="sta4" class="status">read</a></td>
+	<td id="stclh_<%=i%>" class="status"><a id="stclh" class="status">read</a></td>
+	<td id="stcl_<%=i%>" class="status"><a id="stcl" class="status">read</a></td>
+	<td class="statustd">
+	    <a class="a-inside epg" href="../epg/<%=data[i].ch_id%>">EPG</a>  
+        <a class="a-inside edit" href="../start/<%=data[i].id%>">Start</a>                
+        <a class="a-inside delete" href="../stop/<%=data[i].id%>">Stop</a>
+        <a class="a-inside ched" href="../edit/<%=data[i].id%>">Edit</a>                
+        <a class="a-inside delete" onClick="return confirmSubmit('<%=data[i].ch_na%>');" href="../delete/<%=data[i].id%>">Delete</a>
+    </td>
+  </tr>
+    <% } }
+    }else{ %>
+    <tr><td colspan="3">No data</td></tr>
+     <% } %>
+	<tr  style="background:#455b6d;">
+    <td><br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+    </tr>
+</tbody>	
+</table>
+</div>
+</div>	
+
+<form name = "formsendlic" style="width: 0; height: 0; overflow: hidden;" action="/licimp" method="post" enctype="multipart/form-data" ><input type="hidden" name="frl" value="main">
+<div style="width: 0; height: 0; overflow: hidden;">		
+<input type="file" name="lfile" id="lfile" accept="license.lic" onchange="document.getElementById('sendfl').click();" />
+<input type="submit"  name="sendfl" id="sendfl"></div>
+</form>
+
+</body>
+</html>

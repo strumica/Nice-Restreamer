@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>NICE Authentication</title>
+	<link href="/../css/login.css" rel="stylesheet">
+</head>
+<body>
+<script src="/../js/aes.js"></script>
+<script src="/../js/mode-ctr-min.js"></script>
+<script src="/../js/all.js"></script>
+<div class="login-page">
+<div class="form">
+    <% if (message.length > 0) { %>
+    <div class="login-field"><%= Errorrrr %></div>
+    <% } %>
+<form  action="/login" method="post">
+<div><h1>NICE re/streamer pro</h1></div>
+<div><br></div>
+<div>
+    <input type="hidden" name="username" value="">
+	<input type="text" name="usernamef" value="enter username" style="color:#5fd367;" onfocus="if(this.value=='enter username'){this.value='';}" >
+</div>
+<div><br></div>
+<div>
+    <input type="hidden" name="password" value="">
+    <input type="password" name="passwordf" value="enter password" style="color:#5fd367;" onfocus="if(this.value=='enter password'){this.value='';}" >
+</div>
+<div>
+    <img src="/captcha"/>
+    <input type="text" name="captcha" value="" style="color:#5fd367;" onfocus="if(this.value=='enter text'){this.value='';}" >
+</div>
+<div><br></div>
+    <button type="submit" class="btn btn-primary btn-large btn-block" onclick="ten();">Login</button>
+</form>
+<div><br></div>
+</div>
+</div>
+</body>
+<p style="text-align:center;"><a href="http://nice-panel.com" target="_blank">[ nice-iptv pannel © | 2018 | all rights reserved ]</a></p>
+</html>

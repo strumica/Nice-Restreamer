@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>NICE re/streamer pro</title>
+<link href="/../css/style.css" rel="stylesheet">
+</head>
+<body>
+<script src="/../js/all.js"></script>
+<script src="/../js/jquery.min.js"></script>
+<script src="/../js/sockjs.min.js"></script>
+
+<div class="page-header"><h2><%=page_title%>&nbsp;[ configuration ]</h2></div>
+<div class="page-container">
+<nav><ul>
+	<%- include layouts/menu.ejs %>
+	<li><a href="/logout">Logout</a></li>
+</ul></nav>
+<div class="page-data">
+<form method="post" action="/sedit">
+<table id="normal" width="90%" border="0" border-radius:2px cellpadding="4" cellspacing="10">	
+<tr>
+    <th class="mbox">IP</th>
+	<td class="brd"><input type="text" style="width:15%;margin: 0px 0px 0px" name="IP" value="<%=data.IP%>" required></td>               
+</tr>
+<tr>
+    <th class="mbox">IPM3U_list</th>
+	<td class="brd"><input type="text" style="width:15%;margin: 0px 0px 0px" name="IPM3U_list" value="<%=data.IPM3U_list%>" required><div class="tooltip">&#9432;
+  <span class="tooltiptext">User will get this ip or host in list.
+  <br>example- Ip of restreamer is internal(masquerade) example : 192.x./10.x
+  <br>seting here external(internet) ip will allow you users to connect restreamer.
+  <br>defaulf same as IP.
+   </span>
+</div>  </td>     
+</tr>
+<tr>
+    <th class="mbox">MPEGTS_port</th>
+	<td class="brd"><input type="text" style="width:15%;margin: 0px 0px 0px" name="MPEGTS_port" value="<%=data.MPEGTS_port%>" required></td>               
+</tr>
+<tr>
+    <th class="mbox">HLS_port</th>
+	<td class="brd"><input type="text" style="width:15%;margin: 0px 0px 0px" name="HLS_port" value="<%=data.HLS_port%>" required></td>
+</tr>
+<tr>
+    <th class="mbox">Data_port</th>
+	<td class="brd"><input type="text" style="width:15%;margin: 0px 0px 0px" name="Data_port" value="<%=data.Data_port%>" required><div class="tooltip">&#9432;
+  <span class="tooltiptext">Default web(data) port.
+   </span>
+</div>  </td>                    
+</tr>
+<tr>
+    <th class="mbox">XTR_port</th>
+	<td class="brd"><input type="text" style="width:15%;margin: 0px 0px 0px" name="XTR_port" value="<%=data.XTR_port%>" required><div class="tooltip">&#9432;
+  <span class="tooltiptext">Xtream Api port.Client who support xtream Api will connect here.
+  <br>Api v1 and v2 supported.
+   </span>
+</div>  </td>                   
+</tr>
+<tr>
+    <th class="mbox">HLS_filepath</th>
+	<td class="brd"><input type="text" style="width:15%;margin: 0px 0px 0px"  name="HLS_filepath" value="<%=data.HLS_filepath%>" required><div class="tooltip">&#9432;
+  <span class="tooltiptext">Path where .ts segments will be written
+   <br>defaulf (recomended) value ./stream.
+  </span>
+</div>  </td>       
+</tr>
+<tr>
+    <th class="mbox">M3U8_limit</th>
+	<td class="brd"><input type="text" style="width:15%;margin: 0px 0px 0px" name="M3U8_limit" value="<%=data.M3U8_limit%>" required><div class="tooltip">&#9432;
+  <span class="tooltiptext">Number of allowed .ts segments for 60 seconds.
+  <br>example- if you set hls_time 5 this value will be 60:5=12 .ts segments.
+  <br>defaulf (recomended) value 60:M3U8_limit+2.
+  </span>
+</div>  </td>                             
+</tr>
+<tr>
+    <th class="mbox">host</th>
+	<td class="brd"><input type="text" style="width:15%;margin: 0px 0px 0px" name="host" value="<%=data.host%>" required><div class="tooltip">&#9432;
+  <span class="tooltiptext">Reserved for future use.
+  <br>for example balancer.
+    </span>
+</div>  </td>              
+</tr>
+<tr>
+    <th class="mbox">user</th>
+	<td class="brd"><input type="text" style="width:15%;margin: 0px 0px 0px" name="user" value="<%=data.user%>" required></td>               
+</tr>
+<tr>
+    <th class="mbox">password</th>
+	<td class="brd"><input type="text" style="width:15%;margin: 0px 0px 0px" name="password" value="<%=data.password%>" required></td>
+</tr>
+<tr>
+    <th class="mbox">database</th>
+	<td class="brd"><input type="text" style="width:15%;margin: 0px 0px 0px" name="database" value="<%=data.database%>" required></td>               
+</tr>
+<tr>
+    <th class="mbox">webuser</th>
+	<td class="brd"><input type="text" style="width:15%;margin: 0px 0px 0px" name="webuser" value="<%=data.webuser%>" required></td>
+</tr>
+<tr>
+    <th class="mbox">webpass</th>
+	<td class="brd"><input type="text" style="width:15%;margin: 0px 0px 0px" name="webpass" value="<%=data.webpass%>" required></td>               
+</tr>
+<tr>
+    <th class="mbox">hls_init_time</th>
+	<td class="brd"><input type="text" style="width:15%;margin: 0px 0px 0px" name="hls_init_time" value="<%=data.hls_init_time%>" required></td>
+</tr>
+<tr>
+    <th class="mbox">hls_time</th>
+	<td class="brd"><input type="text" style="width:15%;margin: 0px 0px 0px" name="hls_time" value="<%=data.hls_time%>" required><div class="tooltip">&#9432;
+  <span class="tooltiptext">Value for HLS .ts files in seconds.
+  <br>example- every .ts will be long 5 seconds of video.
+     <br>defaulf (recomended) value 5.
+  </span>
+</div>  </td>              
+</tr>
+<tr>
+    <th class="mbox">hls_count</th>
+	<td class="brd"><input type="text" style="width:15%;margin: 0px 0px 0px" name="hls_count" value="<%=data.hls_count%>" required><div class="tooltip">&#9432;
+  <span class="tooltiptext">Number of circle HLS .ts files made in ./stream dir
+     <br>defaulf (recomended) value 10.
+  </span>
+</div>  </td>
+</tr>
+<tr>
+    <th class="mbox">expander</th>
+	<td class="brd"><input type="text" style="width:15%;margin: 0px 0px 0px" name="expander" value="<%=data.expander%>" required><div class="tooltip">&#9432;
+  <span class="tooltiptext">Unique and fast buffer
+  <br>provide big diffrence in streaming!
+   <br>defaulf (recomended) value 1.
+   </span>
+</div>  </td>               
+</tr>
+<tr>
+    <th class="mbox">iframe</th>
+	<td class="brd"><input type="text" style="width:15%;margin: 0px 0px 0px" name="iframe" value="<%=data.iframe%>" required><div class="tooltip">&#9432;
+  <span class="tooltiptext">Iframe checker in stream.
+  <br>if you have big timeout on channel open / switch
+  <br>helps to open stream fast in dynamic mode.
+  <br>defaulf (recomended) value 0.
+  </span>
+</div>  </td>
+</tr>
+<tr>
+    <th class="mbox">verifer_time</th>
+	<td class="brd"><input type="text" style="width:15%;margin: 0px 0px 0px" name="verifer_time" value="<%=data.verifer_time%>" required><div class="tooltip">&#9432;
+  <span class="tooltiptext">Time in seconds for Inactive channels in
+  <br>dynamic/fast copy modes to be swiched OFF.
+  <br>defaulf (recomended) value 60.
+  <br>minimum (recomended) value 30.
+  </span>
+</div>  </td>
+</tr>
+<tr>
+    <th class="mbox">UDP_group</th>
+	<td class="brd"><input type="text" style="width:15%;margin: 0px 0px 0px" name="UDP_int" value="<%=data.UDP_int%>"><div class="tooltip">&#9432;
+  <span class="tooltiptext">Bind to interface lo  
+  <br>and UDP Group 239.0.0.1.
+  <br>on port 5555.
+  </span>
+</div>  </td>
+</tr>
+<tr>
+    <th class="mbox">HLS_api_out</th>
+	<td class="brd"><input type="text" style="width:15%;margin: 0px 0px 0px" name="HLS_api_out" value="<%=data.HLS_api_out%>"><div class="tooltip">&#9432;
+  <span class="tooltiptext">Enable/Disable HLS on API call.Values 0 or 1 
+  <br>example- 1:0:0 enable hls output to Xtream Api.
+   <br>0:1:0 enable hls output to Stalker.
+   <br>0:0:1 enable hls output to Nice Api.
+  <br>defaulf 0:0:0 (hls on all api's off).
+  </span>
+</div>  </td>
+</tr>
+<tr>
+    <th class="mbox">FFstart_static_timeout</th>
+	<td class="brd"><input type="text" style="width:15%;margin: 0px 0px 0px" name="FFst_timeout" value="<%=data.FFst_timeout%>" required><div class="tooltip">&#9432;
+  <span class="tooltiptext">FFmpeg static delay at start.
+  <br>example- If you have 100 or more channels encoded whit GPU's
+  <br>this will enable x delay in seconds at start. 
+  <br>For 50+ channels at static mode recommended value 5.
+  <br>defaulf 1.
+  </span>
+</div>  </td>
+</tr>
+<tr>
+    <th class="mbox">Adult PIN CODE</th>
+	<td class="brd"><input type="text" style="width:15%;margin: 0px 0px 0px" name="ppin" value="<%=data.ppin%>" ><div class="tooltip">&#9432;
+  <span class="tooltiptext">Pin code for "Adult" category.(STALKER PORTAL)
+  </span>
+</div>  </td>
+</tr>
+<tr>
+    <th class="mbox">Extended security</th>
+	<td class="brd"><input type="text" style="width:15%;margin: 0px 0px 0px" name="exsec" value="<%=data.exsec%>" ><div class="tooltip">&#9432;
+  <span class="tooltiptext">Extended security login form (0 - aes+captcha / 1 - no security)
+  </span>
+</div></td>
+</tr>
+<tr>
+    <th class="mbox">Wapi aes key:iv</th>
+	<td class="brd"><input type="text" style="width:15%;margin: 0px 0px 0px"  id="kapi" name="kapi" value="<%=data.kapi%>" > : <input type="text" style="width:15%;margin: 0px 0px 0px"  id="vapi" name="vapi" value="<%=data.vapi%>" >
+	<a class="a-inside edit" onClick="randomPassword();" >Gen</a>
+	<div class="tooltip">&#9432;
+  <span class="tooltiptext">Keys for web api (length 16)
+  </span>
+</div></td>
+</tr>
+<tr>
+    <th class="mbox">User agent</th>
+	<td class="brd"><input type="text" style="width:80%;margin: 0px 0px 0px" id="ua_all" name="ua_all" value="<%=data.ua_all%>" ><div class="tooltip">&#9432;
+  <span class="tooltiptext">Here you can define custom User Agent for
+   <br>connecting channels.UA should be separated by ,.
+   <br>example NR,FFmpeg,VLC.
+  </span>
+</div></td>
+</tr>
+<tr>
+    <td class="label"></td>
+    <td>
+    &nbsp; <input type="submit" name="submit" value="Save" onClick="mSubmits();" >
+    <input type="button" name="cancel" value="Cancel" class="cancel" onClick="cancelAdd()">
+    </td>
+</tr>
+</table>
+</form>        
+</div> 
+</div>  
+</body>
+<script>  
+function randomPassword()
+{
+  chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+  pass = "";
+  for(x=0;x<16;x++)
+  {
+    i = Math.floor(Math.random() * 62);
+    pass += chars.charAt(i);
+  }
+  document.getElementById("kapi").setAttribute('value',pass);
+  pass = "";
+  for(x=0;x<16;x++)
+  {
+    i = Math.floor(Math.random() * 62);
+    pass += chars.charAt(i);
+  }
+  document.getElementById("vapi").setAttribute('value',pass);
+}
+</script>
+</html>

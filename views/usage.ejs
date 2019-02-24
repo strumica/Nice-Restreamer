@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>NICE re/streamer pro</title>
+<link href="/../css/style.css" rel="stylesheet">
+</head>
+<body>
+<script src="/../js/all.js"></script>
+<script src="/../js/jquery.min.js"></script>
+<script src="/../js/sockjs.min.js"></script>
+<script>
+var sock = new SockJS('/echo');
+sock.onopen = function() {};
+sock.onclose = function() {};
+ 
+var timen = 3;
+var tim_x;
+var tim_n;
+
+function refr(n){
+	$("#refr_1").text("off");
+	$("#refr_2").text("3 sec");
+	$("#refr_3").text("30 sec");
+    $("#refr_4").text("60 sec");
+    $("#refr_5").text("3 min");
+    clearTimeout(tim_n);
+    clearTimeout(tim_x);
+switch(n) {
+    case 0:
+		$("#refr_1").text("* off");
+        break;
+    case 3:
+        timen = 3;
+		$("#refr_2").text("* 3 sec");
+		refx();
+        break;
+	case 30:
+        timen = 30;
+		$("#refr_3").text("* 30 sec");
+		refx();
+        break;	
+    case 60:
+        timen = 60;
+		$("#refr_4").text("* 60 sec");
+		refx();
+        break;
+	case 180:
+        timen = 180;
+		$("#refr_5").text("* 3 min");
+		refx();
+        break;	
+    default:
+}
+
+}
+
+function refx(){
+tim_x = setTimeout(function() {sock.send('s');refn();}, timen*1000);
+}
+
+
+function refn(){
+tim_n = setTimeout(function() {sock.send('s');refx();}, timen*1000);
+}
+
+refx();
+
+sock.onmessage = function(e) {
+var updata1 = JSON.parse(e.data);
+var updata = updata1[1];
+
+var d = new Date();
+$("#time").text("Time : "+d.toLocaleTimeString());
+$("#cpu").text("CPU : "+updata1[2]+" %");
+$("#tmem").text("Total mem : "+~~(updata1[3]/1000)+" Gb");
+$("#tmemf").text("Free mem : "+updata1[4]+" %");
+$("#upt").text("TX/RX : "+updata1[5]);
+
+  if(updata.length){ 
+	var tmp = '<table id="normal" width="98%" border="0" cellpadding="0" cellspacing="0"><tr style="background:#455b6d;"><th style="width: 1%;">#</th><th style="width: 1%;">ID</th><th style="width: 40%;" >Channel Name</th><th style="width: 15%;" >uptime</th><th style="width: 15%;" >cpu</th><th style="width: 10%;" >memory mb</th></tr>';
+    var col = "";
+	for(var i = 0;i < updata.length;i++) {
+	 var tmpv = new Date((new Date()) - updata[i][2]).toISOString().match(/(\d{2})T(\d{2}:\d{2}:\d{2})/);tmpv[1]--;
+	 var tmpid =updata[i][0].split('/');
+	 if (col == "#ECF0F1"){col = "#c8d7db";} else {col = "#ECF0F1";}
+	 tmp = tmp+'<tr style="background: '+col+';"><td class="statustde">'+(i+1)+'</td><td  class="statustde" style="background:#13CD13">'+tmpid[1]+'</td><td  class="statustde">'+updata[i][1]+'</td><td  class="status">'+tmpv[1]+"d "+tmpv[2]+'</td><td  class="status">'+updata[i][3]+'</td><td  class="status">'+updata[i][4]+'</td></tr>';
+	
+	}
+	tmp = tmp+'<tr><td><br></td><td></td><td></td><td></td><td></td><td></td></tr></table>';
+	document.getElementById("stat").innerHTML = tmp;  
+  }else{document.getElementById("stat").innerHTML = ''; }
+};
+</script>
+<div id="wrapper">
+<div class="statusdv">
+	<a id="time" class="statusv"></a>
+	<a id="upt" class="statusv"></a>
+	<a id="tmem" class="statusv"></a>
+	<a id="tmemf" class="statusv"></a>
+	<a id="cpu" class="statusv"></a>
+</div>
+<div class="page-header"><h2><%=page_title%>&nbsp;[ FFmpeg usage ]</h2></div>
+<div class="page-container">
+<nav><ul>
+	<%- include layouts/menu.ejs %>
+	<li><a href="/logout">Logout</a></li>
+	<li style="position: absolute; right: 120px;"><a><b>[ active ffmpeg processes ]</b></a></li>
+</ul></nav>
+<div class="page-data">
+<div class="data-table" id="stat">
+</div>
+</div>
+</div>
+</body>
+</html>

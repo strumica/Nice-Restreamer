@@ -1,0 +1,27 @@
+{
+"Copy A/V":"-fflags,+genpts,-nostats,-nostdin,-hide_banner,-loglevel,quiet,-i, ,-c:v,copy,-c:a,copy",
+
+"H264hd|720p|Acopy-logo":"-fflags,+genpts,-nostats,-nostdin,-hide_banner,-loglevel,quiet,-i, ,-i,/nice/public/images/logo.png,-c:v,libx264,-profile:v,baseline,-preset:v,superfast,-force_key_frames,expr:gte(t!n_forced*5),-filter_complex,[0:v]scale=1280:720[base];[1:v][base]scale2ref=(100/100)*ih/16/sar:ih/16[logo][0v];[0v][logo]overlay=30:30[marked],-map,[marked],-map,0:a,-c:a,copy",
+
+"H264hd|720p|Acopy-Delogo":"-fflags,+genpts,-user_agent,Nice RR4.5,-i, ,-nostats,-nostdin,-hide_banner,-loglevel,quiet,-r,25,-c:v,libx264,-profile:v,baseline,-preset:v,superfast,-vf,delogo=x=1500:y=80:w=284:h=120!scale=1280:720 ,-g,25,-b:v,4M,-minrate,3.5M,-maxrate,4M,-bufsize,8M,-strict,-2,-c:a,copy",
+
+"H264sd|aac|UA-2Mbit":"-fflags,+genpts,-user_agent,Nice RR4.5,-i, ,-nostats,-nostdin,-hide_banner,-loglevel,quiet,-c:v,libx264,-profile:v,baseline,-preset:v,superfast,-force_key_frames,expr:gte(t!n_forced*5),-b:v,2M,-maxrate,2M,-bufsize,4M,-strict,-2,-vf,pp=fd,-c:a,aac,-ar,44100,-b:a,128k",
+
+"H264sd|aac|subs-2Mbit":"-fflags,+genpts,-user_agent,Nice RR4.5,-i, ,-nostats,-nostdin,-hide_banner,-loglevel,quiet,-c:v,libx264,-profile:v,baseline,-preset:v,superfast,-g,25,-b:v,2M,-maxrate,2M,-bufsize,4M,-strict,-2,-filter_complex,[0:v][0:s:0]overlay[v];[v]pp=fd[y],-map,[y],-map,0:a,-c:a,aac,-ar,44100,-b:a,128k",
+
+"H264hd|aac-2Mbit":"-fflags,+genpts,-user_agent,Nice RR4.5,-i, ,-nostats,-nostdin,-hide_banner,-loglevel,quiet,-c:v,libx264,-profile:v,baseline,-preset:v,superfast,-g,25,-b:v,2M,-minrate,2M,-maxrate,2M,-bufsize,4M,-strict,-2,-c:a,aac,-ac,2,-b:a,128k",
+
+"H264hd|720p|Acopy-4Mbit":"-fflags,+genpts,-user_agent,Nice RR4.5,-i, ,-nostats,-nostdin,-hide_banner,-loglevel,quiet,-r,25,-c:v,libx264,-profile:v,baseline,-preset:v,superfast,-vf,scale=960:540,-g,25,-b:v,4M,-minrate,3.5M,-maxrate,4M,-bufsize,8M,-strict,-2,-c:a,copy",
+
+"H264hd|720p-3Mbit|subs":"-fflags,+genpts,-user_agent,Nice RR4.5,-i, ,-nostats,-nostdin,-hide_banner,-loglevel,quiet,-r,25,-c:v,libx264,-x264opts,force-cfr,-shortest,-profile:v,baseline,-preset:v,superfast,-g,25,-b:v,3M,-minrate,2.5M,-maxrate,3M,-bufsize,6M,-strict,-2,-filter_complex,[0:s:0]scale=width=1920:height=1080[sub];[v:0][sub]overlay[z];[z]scale=1280:720[y],-map,[y],-map,0:a:0,-c:a,aac,-ac,2,-b:a,128k",
+
+"NVENChd|720p-2Mbit|GPU:0":"-fflags,+genpts,-user_agent,Nice RR4.5,-nostats,-nostdin,-hide_banner,-loglevel,quiet,-hwaccel,cuvid,-c:v,h264_cuvid,-deint,1,-surfaces,8,-drop_second_field,1,-vsync,0,-resize,1280x720,-i,  ,-map,0:v,-c:v,h264_nvenc,-preset,slow,-profile:v,high,-level,4.1,-rc,vbr,-cq,1,-bf,2,-g,25,-b:v,2200k,-minrate,2200k,-maxrate,2200k,-bufsize,1002k,-map,0:a,-c:a,libfdk_aac,-ac,2,-b:a,128k,-strict,experimental",
+
+"NVENChd|720p-2Mbit|GPU:1":"-fflags,+genpts,-user_agent,Nice RR4.5,-nostats,-nostdin,-hide_banner,-loglevel,quiet,-gpu,1,-hwaccel,cuvid,-c:v,h264_cuvid,-deint,1,-surfaces,8,-drop_second_field,1,-vsync,0,-resize,1280x720,-i,  ,-map,0:v,-c:v,h264_nvenc,-preset,slow,-profile:v,high,-level,4.1,-rc,vbr,-cq,1,-bf,2,-g,25,-b:v,2200k,-minrate,2200k,-maxrate,2200k,-bufsize,1002k,-map,0:a,-c:a,libfdk_aac,-ac,2,-b:a,128k,-strict,experimental",
+
+"NVENChd|720p-2Mbit|subs":"-fflags,+genpts,-user_agent,Nice RR4.5,-nostats,-nostdin,-hide_banner,-loglevel,quiet,-hwaccel,cuvid,-c:v,h264_cuvid,-deint,1,-surfaces,8,-drop_second_field,1,-vsync,0,-canvas_size ,720x576,-resize,1280x720,-i, ,-filter_complex,[0:v]hwdownload!format=nv12[base];[0:s:0]scale=1280:720[subtitle];[base][subtitle]overlay[v];[v]hwupload_cuda[v],-map ,[v],-c:v,h264_nvenc,-preset,slow,-profile:v,high,-level,4.1,-rc,vbr,-cq,1,-bf,2,-g,25,-b:v,2200k,-minrate,2200k,-maxrate,2200k,-bufsize,1002k,-map,0:a,-c:a,libfdk_aac,-ac,2,-b:a,128k,-strict,experimental",
+
+"NVENCsd-2Mbit":"-fflags,+genpts,-user_agent,Nice RR4.5,-nostats,-nostdin,-hide_banner,-loglevel,quiet,-hwaccel,cuvid,-c:v,mpeg2_cuvid,-deint,2,-surfaces,8,-drop_second_field,1,-vsync,0,-i,  ,-map,0:v,-c:v,h264_nvenc,-preset,slow,-profile:v,high,-level,4.1,-rc,vbr,-cq,1,-bf,2,-g,25,-no-scenecut,1,-forced-idr,0,-b:v,1808k,-minrate,1808k,-maxrate,1808k,-bufsize,904k,-map,0:a,-c:a,libfdk_aac,-ac,2,-b:a,128k,-strict,experimental",
+
+"NVH265|aac|1Mbit":"-fflags,+genpts,-user_agent,Nice RR4.5,-nostats,-nostdin,-hide_banner,-loglevel,quiet,-hwaccel,cuvid,-deint,2,-c:v,h264_cuvid,-resize,1280x720,-i, ,-map,0:v,-c:v,hevc_nvenc,-preset,slow,-preset,slow,-rc,vbr_hq,-cq,1,-g,25,-b:v,1M,-minrate,1M,-maxrate,1M,-bufsize,512k,-map,0:a,-c:a,libfdk_aac,-ac,2,-b:a,128k,-strict,experimental"
+}

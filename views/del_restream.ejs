@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>NICE re/streamer pro</title>
+<link href="/../css/style.css" rel="stylesheet">
+</head>
+<body>
+<script src="/../js/all.js"></script>
+<script src="/../js/jquery.min.js"></script>
+<script>
+function getValues(n){
+	var boxes = document.getElementsByName('checkbox'), vals = [];
+	for(var i = 0; i < n; ++i){
+		vals.push(boxes[i].checked);
+		vals.push(boxes[i].value);
+	}
+	alert(vals.join('\n'));
+}
+</script>	
+<div class="statusdv">
+	<a id="uptime" class="statusv"></a>
+	<a id="upt" class="statusv"></a>
+	<a id="tmem" class="statusv"></a>
+	<a id="tmemf" class="statusv"></a>
+	<a id="cpu" class="statusv"></a>
+</div>
+<div class="page-header"><h2><%=page_title%></h2></div>	
+<div class="page-container">
+<nav><ul>
+	<%- include layouts/menu.ejs %>
+	<li><a href="/logout">Logout</a></li>
+	<li><a onclick="getValues(<%=data.length%>);"/>Del channel</a></li>
+	<li style="position: absolute; right: 20px;"><a><b>Expires </b><b>[ </b><%=dexp%><b> ]</b> <b>[ mpegts:</b><%=portw%><b> | hls:</b><%=porth%><b> ]</b></a></li>
+</ul></nav> 
+<div class="data-table">
+<table id="normal" width="100%" border="0" cellpadding="0" cellspacing="0" >
+<tbody>
+    <tr>
+	<tr style='text-align:center;vertical-align:middle;background:#455b6d'>
+	 <th style="width: 2%">#</th>
+	 <th style="width: 2%">#</th>
+	 <th style="width: 2%">ID</th>
+	 <th style="width: 55%">Channel Name</th>
+	 <th style="width: 15%">Actions</th>
+	</tr>
+	<% var col = "",colb = "",colb1 = ""; %>
+    <% if(data.length){ 
+    for(var i = 0;i < data.length;i++) { %>
+	<%if (data[i].ch_id != 0){%>
+	<%if (col == "#ECF0F1"){col = "#c8d7db";} else {col = "#ECF0F1";}%>
+    <tr  style="background: <%=col%>;">
+	<td class="statustde"><input type="checkbox" name="checkbox" value=<%=data[i].id%>></td>
+    <td class="statustde"><%=(i+1)%></td>
+    <td id="stat_<%=i%>" class="statusv"><%=data[i].ch_id%></td>
+	<td class="statustde"><a href="../restream/edit/<%=data[i].id%>"><%=data[i].ch_na%></a></td>
+	
+	<td class="statustd">
+        <a class="a-inside edit" href="../restream/edit/<%=data[i].id%>">Edit</a>                
+        <a class="a-inside delete" onClick="return confirmSubmit();" href="../restream/delete/<%=data[i].id%>">Delete</a>
+    </td>
+  </tr>
+    <% } }
+    }else{ %>
+    <tr><td colspan="3">No data</td></tr>
+     <% } %>
+	<tr  style="background:#455b6d;">
+    <td><br></td><td></td><td></td><td></td><td></td><td></td>
+    </tr>
+</table></tbody>
+</div>
+</div>	
+</body>
+</html>

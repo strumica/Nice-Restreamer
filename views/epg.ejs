@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>NICE re/streamer pro</title>
+<link href="/../css/style.css" rel="stylesheet">
+</head>
+<body>
+<script src="/../js/all.js"></script>
+<script src="/../js/jquery.min.js"></script>
+<script>
+
+$(".statustde").click(function(){
+    window.location = $(this).attr('href');
+});
+</script>
+<div class="statusdv">
+	<a id="uptime" class="statusv"></a>
+	<a id="upt" class="statusv"></a>
+	<a id="tmem" class="statusv"></a>
+	<a id="tmemf" class="statusv"></a>
+	<a id="cpu" class="statusv"></a>
+</div>
+<div class="page-header"><h2><%=page_title%>&nbsp;[ current epg ]</h2></div>
+<div class="page-container">
+<nav><ul>
+    <%- include layouts/menu.ejs %>
+	<li><a href="/logout">Logout</a></li>
+</ul></nav> 
+<div class="data-table">
+<table id="normal" width="100%" border="0" cellpadding="0" cellspacing="0" >
+<tbody>
+	<tr style='text-align:center;vertical-align:middle;background:#455b6d'>
+	 <th style="width: 3%">#</th>
+	 <th style="width: 90%">EPG</th>
+
+	</tr>
+	<% var col = "",colb = "",colb1 = ""; %>
+    <% if(epg_data){ 
+    for(var i = 0;i < epg_data.length;i++) { %>
+	<%if (col == "#ECF0F1"){col = "#c8d7db";} else {col = "#ECF0F1";}%>
+  <tr  style="background: <%=col%>;">
+    <td class="statustde"><%=(i+1)%></td>
+    <td id="stat_<%=i%>" class="statusv" ><a><%=epg_data[i].start+"  "+epg_data[i].title%></a></td>
+  </tr>
+    <%  }
+    }else{ %>
+    <tr><td colspan="3">No data</td></tr>
+     <% } %>
+	<tr  style="background:#455b6d;">
+    <td><br></td><td></td><td>
+    </tr>
+</tbody>	
+</table>
+</div>
+</div>	
+<form style="width: 0; height: 0; overflow: hidden;" action="/imp" method="post" enctype="multipart/form-data" ><input type="hidden" name="fr" value="main">
+<div style="width: 0; height: 0; overflow: hidden;">		
+<input type="file" name="ufile" id="ufile" accept=".m3u,.M3U" onchange="document.getElementById('sendf').click();" />
+<input type="submit"  name="sendf" id="sendf" ></div>
+</form> 
+</body>
+</html>

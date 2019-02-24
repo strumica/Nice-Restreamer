@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>NICE re/streamer pro</title>
+<link href="/../css/style.css" rel="stylesheet">
+</head>
+<body>
+<script src="/../js/all.js"></script>
+<script>
+function toggle(sr) {
+  var frm = document.getElementsByName('formsend');
+  frm[0].action='/imp/'+sr;
+  document.getElementById('ufile').click();
+}
+</script>
+<div class="page-header"><h2><%=page_title%></h2></div>
+<div class="page-container">
+<nav><ul>
+	<%- include layouts/menu.ejs %>
+	<li><a href="/logout">Logout</a></li>
+</ul></nav>
+<div class="page-data">
+<div class="data-table">
+<table id="normal" width="100%" border="0" cellpadding="0" cellspacing="0" >
+<tbody>
+<tr style='text-align:center;vertical-align:middle;'>
+<form method="post" action="/balancers/add">
+<td><a></a></td>
+<td><input type="text" name="bal_ids" value="enter bal id" class="memin" onfocus='if(this.value=="enter id"){this.value="";}' onblur="this.value = this.value==''?'enter bal id':this.value;" required></td>
+<td><input type="text" name="bal_nams" value="enter bal name" class="memin" onfocus='if(this.value=="enter name"){this.value="";}' onblur="this.value = this.value==''?'enter bal name':this.value;" required></td>
+<td><input type="text" name="bal_ips" value="enter bal ip" class="memin" onfocus='if(this.value=="enter url"){this.value="";}' onblur="this.value = this.value==''?'enter bal ip':this.value;" required></td>
+<td><input type="text" name="bal_locs" value="enter bal location" class="memin" onfocus='if(this.value=="enter url"){this.value="";}' onblur="this.value = this.value==''?'enter bal location':this.value;" required></td>
+<td><input type="text" name="bal_wats" value="enter bal water mark" class="memin" onfocus='if(this.value=="enter url"){this.value="";}' onblur="this.value = this.value==''?'enter bal water mark':this.value;" required></td>
+<td class="statustd"><input class="a-inside edit" type="submit" name="submit" value="Add balancer"></td>
+</form> 
+</tr><tr><td><br></td></tr>
+<tr style='text-align:center;vertical-align:middle;background:#455b6d'>
+	<th style="width: 1%">#</th>
+	<th style="width: 10%">Id</th>
+	<th style="width: 20%">Name</th>
+	<th style="width: 20%">IP</th>
+	<th style="width: 20%">Location</th>
+	<th style="width: 20%">Water mark</th>
+	<th style="width: 1%">Action</th>
+</tr>
+<% var col = "",colb = ""; %>
+<% if(data.length){ 
+for(var i = 0;i < data.length;i++) { %>
+<%if (data[i].cat_id != 0){%>
+<%if (col == "#ECF0F1"){col = "#CFD9DB";} else {col = "#ECF0F1";}%>
+<tr  style="background: <%=col%>;">
+    <td class="statustde"><%=(i+1)%></td>
+	<td class="status"><%=data[i].bal_id%></td>
+	<td class="status"><%=data[i].bal_nam%></td>
+	<td class="status"><%=data[i].bal_ip%></td>
+	<td class="status"><%=data[i].bal_loc%></td>
+	<td class="status"><%=data[i].bal_wat%></td>
+    <td class="statustd" style="padding-left:10px;">             
+		<a class="a-inside edit" href="../balancers/edit/<%=data[i].id%>">Edit</a>                
+        <a class="a-inside delete" onClick="return confirmSubmit('<%=data[i].bal_nam%>');" href="../balancers/delete/<%=data[i].bal_id%>">Delete</a>
+    </td>
+</tr>
+<% } }
+}else{ %>
+<tr><td colspan="3">No data</td></tr>
+<% } %>
+<tr style="background:#455b6d;"><td><br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<form name = "formsend" style="width: 0; height: 0; overflow: hidden;" action="/imp" method="post" enctype="multipart/form-data" ><input type="hidden" name="fr" value="main">
+<div style="width: 0; height: 0; overflow: hidden;">		
+<input type="file" name="ufile" id="ufile" accept=".m3u,.M3U" onchange="document.getElementById('sendf').click();" />
+<input type="submit"  name="sendf" id="sendf" ></div>
+</form>
+</body> 
+</html>

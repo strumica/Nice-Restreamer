@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>NICE re/streamer pro</title>
+<link href="/../css/style.css" rel="stylesheet">
+</head>
+<body>
+<script src="/../js/all.js"></script>
+<script src="/../js/jquery.min.js"></script>
+<script>
+$(".statustde").click(function(){
+    window.location = $(this).attr('href');
+});
+function getcat(n){
+	window.location.href = ""+n;
+}
+function getdel(n){
+    var ji=0;
+	var boxes = document.getElementsByName('checkbox'), vals = [];
+	for(var i = 0; i < n; ++i){
+	    if(boxes[i].checked){vals.push(boxes[i].value);ji++;}
+	}
+	if(ji>0){
+	    var agree=confirm("Are you sure you want to delete! All selected.");
+        if (agree)window.location.href = "../gdelete/"+vals;
+	}else{
+		var agree=confirm("More than 0 bookmark needed!");
+	}
+
+	
+}
+function toggle(source) {
+    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    for (var i = 0; i < checkboxes.length; i++) {
+        if (checkboxes[i] != source)
+            checkboxes[i].checked = source.checked;
+    }
+}
+function tcol() {
+    var jt=false;
+	var jm=false
+    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    for (var i = 0; i < checkboxes.length; i++) {
+        if(checkboxes[i].checked){
+		    if(!jt){checkboxes[i].style.width ="40px";jm=true;}
+			jt=true;
+		} 
+		if(!jm){checkboxes[i].style.width ="20px";}else{jm=false;}
+    }
+}
+function psave(n){
+	var ji=0;
+	var boxes = document.getElementsByName('checkbox'), vals = [];
+	for(var i = 0; i < n; ++i){
+	    if(boxes[i].checked){vals.push(boxes[i].value);ji++;}
+	}
+	if(ji>0){
+	    var boxec = document.getElementsByName('presets'), valc = [];
+		//alert("../csave/"+vals+","+boxec[0].value);
+        window.location.href = "../psave/"+vals+","+<%=data[0].ch_cat%>+","+boxec[0].value;
+	}else{
+		var agree=confirm("More than 0 bookmark needed!");
+	}
+}
+function csave(n){
+	var ji=0;
+	var boxes = document.getElementsByName('checkbox'), vals = [];
+	for(var i = 0; i < n; ++i){
+	    if(boxes[i].checked){vals.push(boxes[i].value);ji++;}
+	}
+	if(ji>0){
+	    var boxec = document.getElementsByName('tcsave'), valc = [];
+		//alert("../csave/"+vals+","+<%=data[0].ch_cat%>+","+boxec[0].value);
+        window.location.href = "../csave/"+vals+","+<%=data[0].ch_cat%>+","+boxec[0].value;
+	}else{
+		var agree=confirm("More than 0 bookmark needed!");
+	}
+}
+
+function tsave(n){
+    var ji=0;
+	var boxes = document.getElementsByName('checkbox'), vals = [];
+	for(var i = 0; i < n; ++i){
+	    if(boxes[i].checked){vals.push(boxes[i].value);ji++;}
+	}
+	if(ji>1){
+	    //var boxec = document.getElementsByName('tcsave'), valc = [];
+        window.location.href = "../tsave/"+vals+","+<%=data[0].ch_cat%>;
+	}else{
+		var agree=confirm("More than 1 bookmark needed!");
+	}
+}
+
+function usave(n){
+    var ji=0;
+	var boxes = document.getElementsByName('checkbox'), vals = [];
+	for(var i = 0; i < n; ++i){
+	    if(boxes[i].checked){
+		if(i>0){
+		vals.push(boxes[i-1].value);
+		vals.push(boxes[i].value);
+		ji++;
+		}
+		break;}
+	}
+	if(ji==1){
+	    //alert(vals);
+	    //var boxec = document.getElementsByName('tcsave'), valc = [];
+        window.location.href = "../tusave/"+vals;
+	}else{
+		var agree=confirm("One bookmark needed!");
+	}
+}
+
+function dsave(n){
+    var ji=0;
+	var boxes = document.getElementsByName('checkbox'), vals = [];
+	for(var i = 0; i < n; ++i){
+	    if(boxes[i].checked){
+		if(i<n-1){
+		vals.push(boxes[i+1].value);
+		vals.push(boxes[i].value);
+		ji++;
+		}
+		break;}
+	}
+	if(ji==1){
+	    //alert(vals);
+	    //var boxec = document.getElementsByName('tcsave'), valc = [];
+        window.location.href = "../tusave/"+vals;
+	}else{
+		var agree=confirm("One bookmark needed!");
+	}
+}
+
+function stsave(n){
+	var ji=0;
+	var boxes = document.getElementsByName('checkbox'), vals = [];
+	for(var i = 0; i < n; ++i){
+	    if(boxes[i].checked){vals.push(boxes[i].value);ji++;}
+	}
+	if(ji>0){
+	    var boxec = document.getElementsByName('chstat'), valc = [];
+		//alert("../csave/"+vals+","+<%=data[0].ch_cat%>+","+boxec[0].value);
+        window.location.href = "../stsave/"+vals+","+<%=data[0].ch_cat%>+","+boxec[0].value;
+	}else{
+		var agree=confirm("More than 0 bookmark needed!");
+	}
+}
+
+
+</script>
+<div class="page-header"><h2><%=page_title%>&nbsp;[ channels editor ]</h2></div>
+<div class="page-container">
+<nav><ul>
+<%- include layouts/menu.ejs %>
+<li>
+<a style="cursor: pointer;background:#BCBCBC;"  href="#" >> Categorie to edit <</a>
+<ul>
+	<%if(catn.length){ 
+    for (var n in catn) { if(n!=0){%>
+	<li><a onClick="getcat(<%=n%>);" href="#"><%=catn[n]%></a></li>
+	<%}}}%>
+</ul>
+</li>
+<li><a href="/logout">Logout</a></li>
+</ul>
+<ul>
+		<li><a class="list-x" onClick="getdel(<%=data.length%>);" ></a></li>
+		<li><a class="list-up" onClick="tsave(<%=data.length%>);"></a></li>
+		<li><a class="list-u" onClick="usave(<%=data.length%>);"></a></li>
+		<li><a class="list-d" onClick="dsave(<%=data.length%>);"></a></li>
+		<li><a style="color:red;">move to ></a></li>
+		<li>
+		<select name="tcsave" style="border-radius:0px;padding:1px;height:26px;background:#383232;">
+	    <%if(catn.length){ 
+        for (var n in catn) { %>
+	    <%if(catn[data[0].ch_cat] == catn[n]){%><option value="<%=n%>" selected ><%=catn[data[0].ch_cat]%></option>
+	    <%}else{%><option value="<%=n%>" ><%=catn[n]%></option>
+	    <%}}}%>
+        </select>
+		</li>
+		<li><a  class="list-s1" onClick="csave(<%=data.length%>);"></a></li>
+		<li><a style="color:red;">presset ></a></li>
+		<li>
+		<select name="presets" style="border-radius:0px;padding:1px;height:26px;background:#383232;">
+	    <option value="">off</option>
+	    <%if(preset){ 
+		var iv =0;
+        for (var n in preset) { iv++;%>
+	    <option value="<%=iv%>" ><%=n%></option>
+	    <%}}%>
+        </select>
+		</li>
+		<li><a  class="list-s2" onClick="psave(<%=data.length%>);"></a></li>
+		<li><a style="color:red;">stream mode ></a></li>
+		<li>
+		<select name="chstat" style="border-radius:0px;padding:1px;height:26px;background:#383232;">
+        <option value="0">[ffmpeg]dynamic</option>
+	    <option value="1">[ffmpeg]static</option>
+	    <option value="2">redirect</option>
+	    <option value="3">[dynamic]fast copy</option>
+		<option value="4">[static]fast copy</option>
+        </select>
+		</li>
+        <li><a  class="list-s3" onClick="stsave(<%=data.length%>);"></a></li>
+		<li><a  class="list-s4" onClick="rest();"></a></li>
+</ul></nav> 
+<div class="data-table">
+<table id="normal" width="100%" border="0" cellpadding="0" cellspacing="0" >
+<tbody>
+    <tr>
+	<tr style='text-align:center;vertical-align:middle;background:#455b6d;'>
+	 <th style="width: 2%;">#</th>
+	 <th style="width: 2%;text-align:left;padding-left: 4px;"><input type="checkbox" onclick="toggle(this);" /></th>
+	 <th style="width: 2%;">ID</th>
+	 <th style="width: 55%">Channel Name</th>
+	 <th style="width: 4%">Categories</th>
+	 <th style="width: 4%">Video</th>
+	 <th style="width: 4%">Audio</th>
+	 <th style="width: 4%">Type</th>
+	</tr>
+	<% var col = "",colb = "",colb1 = ""; %>
+    <% if(data.length){ 
+    for(var i = 0;i < data.length;i++) { %>
+	<%if (data[i].ch_id != 0){%>
+    <%if (col == "#ECF0F1"){col = "#CFD9DB";} else {col = "#ECF0F1";}%>
+  <tr  style="background: <%=col%>;">
+    <td class="status"><%=(i+1)%></td>
+	<td class="statustde"><div name="r_<%=data[i].id%>" ><input type="checkbox" name="checkbox" value=<%=data[i].id%> onclick="tcol();"></div></td>
+    <td class="status"><%=data[i].ch_id%></td>
+	<td class="statustdd"><%=data[i].ch_na%></td>
+	<td class="status"><%=catn[data[i].ch_cat]%></td>
+	<% var vid, aud ;
+	if(data[i].ch_ff.indexOf("libx264") == -1)
+	{vid="copy";colb=col;}
+	else{vid="h264";colb="#afc1c3";};
+	if(data[i].ch_ff.indexOf("aac") == -1)
+    {aud="copy";colb1=col;}
+	else{aud="aac";colb1="#b5c3c6";}; %>
+	<td class="status" style="background: <%=colb%>;"><%=vid%></td>
+	<td class="status" style="background: <%=colb1%>;"><%=aud%></td>
+	<%var flagst;if(data[i].ch_stat == 0){flagst="dynamic";colb1="#008192";};if(data[i].ch_stat == 1){flagst="static";colb1="#854c4c";};if(data[i].ch_stat == 2){flagst="redirect";colb1="#0ac169";};if(data[i].ch_stat == 3){flagst="fast copy";colb1="#b5124d";}%>
+	<td class="status"style="color: <%=colb1%>;"><%=flagst%></td>
+  </tr>
+    <% } }
+    }else{ %>
+    <tr><td colspan="3">No data</td></tr>
+     <% } %>
+	<tr  style="background:#455b6d;">
+    <td><br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+    </tr>
+</table></tbody>
+</div>
+</div>
+</body>
+</html>

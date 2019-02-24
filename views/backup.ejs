@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>NICE re/streamer pro</title>
+<link href="/../css/style.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Signika" />
+</head>
+<body>
+<script src="/../js/all.js"></script>
+<script>
+function toggle() {
+
+var agree=confirm("After Import Restreamer will be Restarted! ");
+if (agree)
+return true ;
+else
+return false ;
+}
+
+function togglewb() {
+var agree=confirm("Upload from web browser!");
+if (agree){
+    var frm = document.getElementsByName('formsend');
+    frm[0].action='/dbexp';
+    document.getElementById('ufile').click();
+}
+}
+</script>
+<div class="page-header"><h2><%=page_title%>&nbsp;[ backup ]</h2></div>
+<div class="page-container">
+<nav><ul>
+    <%- include layouts/menu.ejs %>
+	<li><a href="/logout">Logout</a></li>
+	<li style="position: absolute; right: 150px;"><a onClick="togglewb()" style="cursor:pointer;">File upload</a></li>
+	<li style="position: absolute; right: 10px;"><a href="/dbexp/n">Create DB backup</a></li>
+</ul></nav>
+<div class="page-data">
+<div class="data-table">
+<table id="normal" width="100%" border="0" cellpadding="0" cellspacing="0" >
+<tbody>
+<tr style='text-align:left;vertical-align:middle;background:#455b6d'>
+	<th style="width: 1%">#</th>
+	<th style="width: 90%">File</th>
+	<th>Actions</th>
+</tr>
+<% var col = "",colb = ""; %>
+<% if(data.length){ 
+for(var i = 0;i < data.length;i++) { %>
+<%if (data[i] != ""){%>
+<%if (col == "#ECF0F1"){col = "#CFD9DB";} else {col = "#ECF0F1";}%>
+<tr  style="background: <%=col%>;">
+    <td class="statustde"><%=(i+1)%></td>
+	<td class="status"><%=data[i]%></td>
+    <td class="statustd" style="padding-left:32px;">
+	    <a class="a-inside edit" href="/dbexp/e<%=data[i]%>">Download</a>
+		<a class="a-inside edit" onClick="return toggle();" href="/dbexp/i<%=data[i]%>">Import to DB</a>
+        <a class="a-inside delete" onClick="return confirmSubmit('<%=data[i]%>');" href="/dbexp/d<%=data[i]%>">Delete</a>
+    </td>
+</tr>
+<% } }
+}else{ %>
+<tr><td colspan="3">No data</td></tr>
+<% } %>
+<tr style="background:#455b6d;"><td><br></td><td></td><td></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<form name = "formsend" style="width: 0; height: 0; overflow: hidden;" action="/dbexp" method="post" enctype="multipart/form-data" ><input type="hidden" name="fr" value="main">
+<div style="width: 0; height: 0; overflow: hidden;">		
+<input type="file" name="ufile" id="ufile" accept=".sql,.SQL" onchange="document.getElementById('sendf').click();" />
+<input type="submit"  name="sendf" id="sendf"></div>
+</form>
+</body> 
+</html>

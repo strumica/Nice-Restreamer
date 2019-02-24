@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>NICE re/streamer pro</title>
+<link href="/../css/style.css" rel="stylesheet">
+</head>
+<body>
+<script src="/../js/all.js"></script>
+<div class="page-header"><h2><%=page_title%>&nbsp;[ edit reseller ]</h2></div>
+<div class="page-container">
+<nav>
+	<ul>
+		<li><a href="/reseller">Users</a></li>
+		<li><a href="/reseller/log">Connections</a></li>
+		<li><a href="/logout">Logout</a></li>
+		<li style="position: absolute; right: 1px;"><input id="search" type="text" placeholder="Search" autocomplete="off" /></li>
+	</ul>
+</nav>
+<div class="page-data"> 
+<form method="post" action="/reseller/edit/<%=data[0].id%>">
+<table id="normal" width="90%" border="0" border-radius:2px cellpadding="4" cellspacing="10">	
+<tr>
+	<th class="mbox">Username</th>
+	<td class="brd"><input type="text" name="username" value="<%=data[0].username%>" required></td>
+</tr>
+<tr>
+    <th class="mbox">Password</th>
+	<td class="brd"><input type="text" name="password" value="<%=data[0].password%>" required></td>
+</tr>
+<tr>
+	<th class="mbox">Information</th>
+	<td class="brd"><input type="text" name="etiket" value="<%=data[0].etiket%>" ></td>
+</tr>
+<tr>
+	<th class="mbox">Max Connections</th>
+	<td class="brd"><input type="text" name="numcon" value="<%=data[0].numcon%>" ></td>
+</tr>
+<tr>
+	<th class="mbox">Categories</th>
+	<td class="brd" >
+<table id="normal" width="100%" border="0" cellpadding="2" cellspacing="0" >
+<tr > 
+	<%if(catn.length){ 
+	var nidd = data[0].idpls;
+	var nid = nidd.split(",");
+    for(var n in catn) {
+	var a ="";
+    for(var i = 0;i < nid.length ;i++) { 
+	if(nid[i] == n){a ="checked";}}%>
+	<td class="checkbox"><input type="checkbox" name="check_<%=n%>" value=<%=n%> <%=a%> >  <%=catn[n]%> id : <%=n%></td>
+	<%}}%>
+	
+	<%if(catn){ 
+	var nidd = data[0].idpls;
+	var nid = nidd.split(",");
+    for (var ns in catn) { 
+	var a =""; 
+	var n = ns.split('_'); 
+	for(var i = 0;i < nid.length ;i++){if(nid[i] == n[0]){a ="checked";}}%>
+	<td class="checkbox"><input type="checkbox" name="check_<%=n[0]%>" value=<%=n[0]%> <%=a%> >  <%=catn[ns]%> [ ID: <%=n[0]%> ]</td>
+	
+	<%}}%>
+	
+	
+	
+</tr>
+</table>
+</td>
+<tr>
+	<th class="mbox">Allowed ip(s)</th>
+	<td class="brd" ><input type="text" name="numip" value="<%=data[0].numip%>" ></td>
+</tr>
+<tr>
+	<th class="mbox">End-Date</th>
+	<td class="brd" >
+	<%var tmph = new Date(data[0].dateex*1000).toISOString().split('T')[0];%>
+	<select id="date" name="date" >
+    <option value="0"><%=tmph%></option>
+	<option value="1">+1 Months</option>
+	<option value="3">+3 Months</option>
+	<option value="6">+6 Months</option>
+	<option value="12">+12 Months</option>
+    </select>
+	
+</td>
+</tr>
+<tr><td class="label"></td>
+<td>
+&nbsp; <input type="submit" name="submit" value="Save">
+<input type="button" name="cancel" value="Cancel" class="cancel" onClick="window.location.href = '/reseller'">
+</td>
+</tr>
+</table>
+</form>   
+</div>   
+</div> 
+</body> 
+</html>

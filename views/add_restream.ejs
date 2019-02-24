@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>NICE re/streamer pro</title>
+<link href="/../css/style.css" rel="stylesheet">
+</head>
+<body>
+<script src="/../js/all.js"></script>
+<script src="/../js/jquery.min.js"></script>
+<script src="/../js/sockjs.min.js"></script>
+<script>
+var sock = new SockJS('/echo');
+sock.onopen = function() {};
+sock.onclose = function() {};
+sock.onmessage = function(e) {
+$("#info").text(e.data);
+
+};
+</script>
+<div class="page-header"><h2><%=page_title%>&nbsp;[ add channel ]</h2></div>
+<div class="page-container">
+<nav><ul>
+	<%- include layouts/menu.ejs %>
+	<li><a href="/logout">Logout</a></li>
+</ul></nav>
+<div class="page-data"> 
+<form method="post" action="/restream/add">
+<table id="normal" width="90%" border="0" border-radius:2px cellpadding="4" cellspacing="10">			
+<tr>
+	<th class="mbox">Channel Name</th>
+	<td class="brd"><input type="text" name="ch_na" required></td>
+</tr>
+
+<tr>
+    <th class="mbox">Channel source</th>
+	<td class="brd"><input id="intxt" type="text" name="ch_st" required></td>
+</tr>
+<tr>
+	<th class="mbox">Stream information</th>
+    <td class="brd"><input type="button" name="c" value="Get info" class="analyze"  style="position:absolute;width:110px;" onClick="var code = $('#intxt').val();$('#info').text('Analyzyng...please wait');sock.send('f'+code);"><textarea id="info" style="width:80%;margin: 4px 130px 0" name="textarea"></textarea></td>
+    </tr>
+<tr>
+<tr>
+	<th class="mbox">Channel back source</th>
+	<td class="brd"><input type="text" name="ch_stbc" required></td>
+</tr>
+<tr>
+	<th class="mbox">FFmpeg command</th>
+<div class="select">			
+<td>
+Presets : 
+	<select id="presets" name="presets" onchange="pre_hide()">
+	<option value="">off</option>
+	<%if(preset){ 
+    for (var n in preset) { %>
+	<option value="<%=preset[n]%>" ><%=n%></option>
+	<%}}%>
+    </select>
+	
+
+Video : 
+	<select id="video" name="video">
+    <option value="copy">copy</option>
+	<option value="500">h264 500kb</option>
+	<option value="1000">h264 1000kb</option>
+	<option value="1500">h264 1500kb</option>
+	<option value="2000">h264 2000kb</option>
+	<option value="2500">h264 2500kb</option>
+    </select>				
+Audio : 
+	<select id="audio" name="audio">
+    <option value="copy">copy</option>
+	<option value="96">aac 96k</option>
+	<option value="128">aac 128k</option>
+	<option value="192">aac 192k</option>
+	<option value="384">aac 384k</option>
+    </select>				
+Deinterlace : 
+	<select id="deinterlace" name="deinterlace">
+    <option value="off">off</option>
+	<option value="on">on</option>
+    </select>		
+Subtitles : 
+	<select id="subtitles" name="subtitles">
+    <option value="off">off</option>
+	<option value="copy">copy</option>
+	<option value="hardcode">hardcode</option>
+    </select>				
+</td>
+</tr>
+</div>
+<tr>
+   <th class="mbox">Channel type</th>
+    <td>
+    <select id="ch_stat" name="ch_stat">
+    <option value="0">[ffmpeg]dynamic</option>
+	<option value="1">[ffmpeg]static</option>
+	<option value="2">redirect</option>
+	<option value="3">[dynamic]fast copy</option>
+	<option value="4">[static]fast copy</option>
+	</select>
+	<div class="tooltip">&#9432;
+  <span class="tooltiptext">Presets: work only in FFmpeg modes.!
+  <br>Static modes = Allways connected to Source Channel.
+  <br>Dynamic modes = ON Demand connect Source Channel.
+  <br>Fast Copy Modes are preferred if you DONT transcode!
+   </span>
+</div> 
+	</td>
+</tr>
+<tr>
+	<th class="mbox">Categories</th>
+	<td>
+	<select id="ch_cat" name="ch_cat">
+	<%if(catn.length){ 
+    for (var n in catn) { %>
+	<option value="<%=n%>" ><%=catn[n]%></option>
+	<%}}%>
+    </select>
+    </td>
+</tr>
+<tr>
+	<th class="mbox">Channel HLS</th>
+	<td >
+    <select id="ch_hls" name="ch_hls">
+    <option value="0">don't</option>
+	<option value="1">make</option>
+    </select>
+	<div class="tooltip">&#9432;
+  <span class="tooltiptext">Produce HLS segments for channels.
+   </span>
+</div> 
+	</td>
+</tr>
+<tr>
+	<th class="mbox">Notes</th>
+	<td class="brd"><input type="text" name="ch_note" ></td>
+</tr>
+<tr>
+	<th class="mbox">On Host</th>
+	<td class="brd" ><input type="text" name="ch_ip" value="http://localhost" required></td>
+</tr>
+
+<tr id="ch_epgg">
+	<th class="mbox">Epg</th>
+	<td> Channel Name : 
+	<select name="ch_epg">
+	<option value="nodata" >-</option>
+	<%for (var v in epgn) { 
+    for (var n in epgn[v]) { %>
+	<option value="<%=epgn[v][n]%>" ><%=epgn[v][n]%></option>
+	<%}}%>
+    </select> EPG source :
+	<select name="ch_ce" onClick="cepg();">
+	<option value="nodata" >-</option>
+	<%if(catn.length){ 
+    for (var n in catn) { %>
+	<option value="<%=n%>" ><%=catn[n]%></option>
+	<%}}%>
+    </select>
+    </td>
+</tr>
+	
+<tr>
+	<th class="mbox">Icon</th>
+	<td class="brd"><input type="text" name="ch_ico" ></td>
+</tr>
+<tr>
+	<th class="mbox">Type</th>
+	<td >
+    <select id="ch_typ" name="ch_typ">
+    <option value="live">live</option>
+	<option value="movie">movie</option>
+    </select>
+	</td>
+</tr>
+<tr>
+	<th class="mbox">User agent</th>
+	<td>
+	<select id="ch_uaid" name="ch_uaid" >
+	<%if(uaid.length){ 
+    for (var n in uaid) { %>
+	<option value="<%=n%>" ><%=uaid[n]%></option>
+	<%}}%>
+    </select>
+    </td>
+</tr>
+<tr> 
+    <td class="label"></td>
+    <td>
+    &nbsp; <input type="submit" name="submit" value="Save">
+    <input type="button" name="cancel" value="Cancel" class="cancel" onClick="cancelAdd()">
+    </td>
+</tr>
+</table>
+</form>   
+</div>
+</div>
+
+	<%if(epgn){ 
+    for (var n in epgn) { %>
+	<input name="<%=n%>" type="hidden" value="<%=epgn[n]%>">
+	<%}}%>
+
+<%var icat =0;for (var n in catn) {%>
+<input type="text" name="c_<%=n%>" hidden
+<%
+  var x ='';
+ if(epgn["epg_"+n]){ 
+  for (var nv in epgn['epg_'+n]) { 
+  x = x+epgn['epg_'+n][nv]+',,';
+  }
+ }
+%>
+value="<%=x%>">
+<%icat++;}%>
+
+<script>
+function pre_hide(){
+    var pre = document.getElementById("presets").value;
+	if (pre == ""){
+	    document.getElementById("video").style.visibility = 'visible';
+		document.getElementById("audio").style.visibility = 'visible';
+		document.getElementById("deinterlace").style.visibility = 'visible';
+		document.getElementById("subtitles").style.visibility = 'visible';
+	}else{
+	    document.getElementById("video").style.visibility = 'hidden'; 
+		document.getElementById("audio").style.visibility = 'hidden'; 
+		document.getElementById("deinterlace").style.visibility = 'hidden'; 
+		document.getElementById("subtitles").style.visibility = 'hidden'; 
+	}
+	 
+}
+
+
+function cepg(){
+    var box = document.getElementsByName('ch_ce'), vals = [];
+	var sc = box[0].value;
+	var box1 = document.getElementsByName('epg_'+sc), vals = [];
+	var sp = box1[0].value;
+    var spa = sp.split(',');
+	var tmp = '<select name="ch_epg" ><option value="nodata" >-</option>';
+    for (var n in spa) {
+	 tmp =tmp+"<option value=\""+spa[n]+"\" >"+spa[n]+"</option>";
+	}
+    tmp = tmp+'</select>';
+	document.getElementById("ch_epgg").children[1].children[0].innerHTML = tmp; 	 
+}
+
+</script>
+</body> 
+</html>
